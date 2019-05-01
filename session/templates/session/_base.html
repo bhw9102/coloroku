@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  {% include './_base_head.html' %}
+  {% block head %}
+    {# 각 페이지별로 특수한 head 내용이 필요할 경우에 활용한다. #}
+  {% endblock %}
+</head>
+{% block body %}
+<body>
+  default block
+</body>
+{% endblock %}
+
+{% include './_base_tail.html' %}
+{% block javascript %}
+{% endblock %}
+</html>
