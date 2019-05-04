@@ -13,8 +13,8 @@ SESSION_STATE = (
 
 
 class Session(models.Model):
-    name = models.CharField(max_length=16, default='임의의 세션', help_text="세션명")
-    state = models.CharField(max_length=8, choices=SESSION_STATE, default=SESSION_STATE[0], help_text='상태')
+    name = models.CharField(max_length=16, null=False, blank=False, default='임의의 세션', help_text="세션명")
+    state = models.CharField(max_length=8, null=False, blank=True, choices=SESSION_STATE, default='READY', help_text='상태')
 
 
 class PlayerSession(models.Model):

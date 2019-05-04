@@ -1,5 +1,5 @@
 from django import forms
-from session.models import Player
+from session.models import Player, Session
 
 
 class PlayerForm(forms.ModelForm):
@@ -12,4 +12,11 @@ class PlayerForm(forms.ModelForm):
     #     if Player.objects.filter(name=name).exists():
     #         raise forms.ValidationError("name already exists")
     #     return name
+
+
+class SessionForm(forms.ModelForm):
+    class Meta:
+        model = Session
+        fields = ('name', )
+
 

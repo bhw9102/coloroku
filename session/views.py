@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from session.form import PlayerForm
+from session.form import PlayerForm, SessionForm
 from session.models import *
 
 
@@ -34,6 +34,14 @@ def lobby(request):
 
 
 def create_session(request):
+    # POST
+    if request.method == 'POST':
+        form = SessionForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            new_session = Session.objects.create(name=name)
+            return HttpResponseRedirect(reverse('session', kwargs={'session_id': new_session.id}))
+    # GET
     return render(request, 'session/create_session.html')
 
 
