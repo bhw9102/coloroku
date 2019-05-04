@@ -30,23 +30,23 @@ def lobby(request):
     player = Player.objects.filter(name=request.session.get('player_name')).first()
     # GET
     session_list = Session.objects.filter(state="READY").all()
-    return render(request, 'session/lobby.html', {'session_list':session_list})
+    return render(request, 'session/lobby.html', {'session_list': session_list})
 
 
-def create_session(request):
+def create_room(request):
     # POST
     if request.method == 'POST':
         form = SessionForm(request.POST)
         if form.is_valid():
             name = form.cleaned_data['name']
-            new_session = Session.objects.create(name=name)
-            return HttpResponseRedirect(reverse('session', kwargs={'session_id': new_session.id}))
+            session = Session.objects.create(name=name)
+            return HttpResponseRedirect(reverse('room', kwargs={'session_id': session.id}))
     # GET
-    return render(request, 'session/create_session.html')
+    return render(request, 'session/create_room.html')
 
 
-def session(request, session_id):
-    return render(request, 'session/session.html')
+def room(request, session_id):
+    return render(request, 'session/room.html')
 
 
 def play(request):

@@ -6,9 +6,9 @@
 
 {% block body %}
   <body>
-    <a href="{% url 'create_session' %}">방 만들기</a>
+    <a href="{% url 'create_room' %}">방 만들기</a>
     {% for session in session_list %}
-      <li><a href="{% url 'session' session_id=session.id %}">{{ session.name }}</a></li>
+      <li><a href="{% url 'room' session_id=session.id %}">{{ session.name }}</a></li>
     {% endfor %}
   </body>
 {% endblock %}
