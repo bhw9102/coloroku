@@ -1,0 +1,16 @@
+{% extends './_base.html' %}
+{% load static %}
+
+{% block head %}
+{% endblock %}
+
+{% block body %}
+  <body>
+    {% for session in session_list %}
+      <li><a href="{% url 'session' session_id=session.id %}">{{ session.name }}</a></li>
+    {% endfor %}
+  </body>
+{% endblock %}
+
+{% block javascript %}
+{% endblock %}

@@ -27,25 +27,25 @@ def login(request):
 
 
 def lobby(request):
-    print("test1 : ", request.session['player_name'])
     player = Player.objects.filter(name=request.session.get('player_name')).first()
-    print("test1 : ", player)
-    return render(request, 'session/intro.html')
+    # GET
+    session_list = Session.objects.filter(state="READY").all()
+    return render(request, 'session/lobby.html', {'session_list':session_list})
 
 
-def create_room(request):
-    return render(request, 'session/intro.html')
+def create_session(request):
+    return render(request, 'session/create_session.html')
 
 
-def room(request):
-    return render(request, 'session/intro.html')
+def session(request, session_id):
+    return render(request, 'session/session.html')
 
 
 def play(request):
-    return render(request, 'session/intro.html')
+    return render(request, 'session/play.html')
 
 
 def result(request):
-    return render(request, 'session/intro.html')
+    return render(request, 'session/result.html')
 
 
