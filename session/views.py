@@ -1,4 +1,8 @@
 from django.shortcuts import render
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+from session.form import PlayerForm
+from session.models import *
 
 
 def intro(request):
@@ -6,7 +10,19 @@ def intro(request):
 
 
 def login(request):
-    return render(request, 'session/login.html')
+    # POST
+    if request.method == 'POST':
+        form = PlayerForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            player = Player.objects.filter(name=name).first()
+            if player is None:
+                player = Player.objects.create(name=name)
+            request.session['player'] = player
+        return HttpResponseRedirect(reverse('lobby'))
+    # GET
+    player_form = PlayerForm(initial={"name":""})
+    return render(request, 'session/login.html', {'player_form': player_form})
 
 
 def lobby(request):

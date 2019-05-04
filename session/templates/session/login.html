@@ -7,9 +7,9 @@
 {% block body %}
   <body>
     <div>당신의 이름을 입력하고 로그인 버튼을 눌러주세요.</div>
-    <form method="POST" id="login">
+    <form method="POST" id="player_form">
       {% csrf_token %}
-      <input type="text" name="name" value="{{ form.name.value }}">
+      <input type="text" name="name" value="{{ player_form.name.value }}">
       <input type="submit" value="login">
     </form>
   </body>
