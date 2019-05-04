@@ -6,6 +6,7 @@
 
 {% block body %}
   <body>
+    {% include './_signedin.html' %}
     <a href="{% url 'create_room' %}">방 만들기</a>
     {% for session in session_list %}
       <li><a href="{% url 'room' session_id=session.id %}">{{ session.name }}</a></li>

@@ -21,14 +21,14 @@ def login(request):
             request.session['player_name'] = player.name
             return HttpResponseRedirect(reverse('lobby'))
     # GET
-    request.session['player_name'] = "test"
     player_form = PlayerForm(initial={"name":""})
     return render(request, 'session/login.html', {'player_form': player_form})
 
 
 def lobby(request):
-    player = Player.objects.filter(name=request.session.get('player_name')).first()
+    player = Player.objects.filter(name=request.session['player_name']).first()
     # GET
+    # TODO: 접속해있던 모든 방에서 나가지게 해야한다.
     session_list = Session.objects.filter(state="READY").all()
     return render(request, 'session/lobby.html', {'session_list': session_list})
 
@@ -40,12 +40,14 @@ def create_room(request):
         if form.is_valid():
             name = form.cleaned_data['name']
             session = Session.objects.create(name=name)
+            request['session'] = session
             return HttpResponseRedirect(reverse('room', kwargs={'session_id': session.id}))
     # GET
     return render(request, 'session/create_room.html')
 
 
 def room(request, session_id):
+
     return render(request, 'session/room.html')
 
 
