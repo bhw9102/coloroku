@@ -18,14 +18,18 @@ def login(request):
             player = Player.objects.filter(name=name).first()
             if player is None:
                 player = Player.objects.create(name=name)
-            request.session['player'] = player
-        return HttpResponseRedirect(reverse('lobby'))
+            request.session['player_name'] = player.name
+            return HttpResponseRedirect(reverse('lobby'))
     # GET
+    request.session['player_name'] = "test"
     player_form = PlayerForm(initial={"name":""})
     return render(request, 'session/login.html', {'player_form': player_form})
 
 
 def lobby(request):
+    print("test1 : ", request.session['player_name'])
+    player = Player.objects.filter(name=request.session.get('player_name')).first()
+    print("test1 : ", player)
     return render(request, 'session/intro.html')
 
 

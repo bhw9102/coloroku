@@ -2,7 +2,7 @@ from django.db import models
 
 
 class Player(models.Model):
-    name = models.CharField(max_length=32, unique=True, help_text='이름')
+    name = models.CharField(max_length=32, help_text='이름')
 
 
 SESSION_STATE = (
