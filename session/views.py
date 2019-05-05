@@ -56,6 +56,7 @@ def room(request, session_id):
     if player_session is None:
         PlayerSession.objects.create(player=player, session=session)
     player_session_list = PlayerSession.objects.filter(session=session, state='JOINED').all()
+    request.session['session_name'] = session.name
     return render(request, 'session/room.html', {'player_session_list': player_session_list})
 
 
