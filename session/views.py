@@ -97,9 +97,14 @@ def play(request, session_id):
                 order_card.player_session = player_session
                 order_card.location = 'HAND'
                 order_card.save()
-    # 게임 진행 정보를 취합한다.
-    # if session.state == 'PLAY':
-    #     hand_list =
+    # 플레이어에게 전달할 게임 진행 정보를 취합한다.
+    if session.state == 'PLAY':
+        player_session = PlayerSession.objects.filter(session=session, player__name=request.session['player_name'], state='JOINED').first()
+        deck_cnt = Card.objects.filter(session=session, location='DECK').all().count()
+        hand_list = Card.objects.filter(session=session, location='HAND', player_session=player_session).all()
+        board_list = Card.objects.filter(session=session, location='BOARD', pos_z=0).all()
+        data = dict(deck_cnt=deck_cnt, hand_list=hand_list, board_list=board_list)
+        return render(request, 'session/play.html', data)
     return render(request, 'session/play.html')
 
 

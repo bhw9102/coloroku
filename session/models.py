@@ -56,13 +56,13 @@ CARD_FACE = (
 class Card(models.Model):
     session = models.ForeignKey('Session', on_delete=models.CASCADE, help_text='세션')
     card = models.ForeignKey('game.CardClass', on_delete=models.CASCADE, help_text='카드')
-    location = models.CharField(max_length=8, choices=CARD_LOCATION, default=CARD_LOCATION[0], help_text='카드의 위치')
+    location = models.CharField(max_length=8, choices=CARD_LOCATION, default='DECK', help_text='카드의 위치')
     order = models.PositiveSmallIntegerField(null=True, blank=True, help_text='카드 뭉치 속에서 순서, 0부터 가장 위')
     player_session = models.ForeignKey('PlayerSession', null=True, blank=True, on_delete=models.CASCADE, help_text='소유한 플레이어')
     pos_x = models.PositiveSmallIntegerField(null=True, blank=True, help_text='보드 위 x 좌표')
     pos_y = models.PositiveSmallIntegerField(null=True, blank=True, help_text='보드 위 y 좌표')
-    pos_z = models.PositiveSmallIntegerField(null=True, blank=True, help_text='보드 위 z 좌표')
-    face = models.CharField(max_length=8, choices=CARD_FACE, null=True, blank=True, help_text='보드 위 보이는 면')
+    pos_z = models.PositiveSmallIntegerField(null=True, blank=True, help_text='보드 위 z 좌표, 보이는 카드의 값이 0이 되도록 한다.')
+    face = models.CharField(max_length=8, choices=CARD_FACE, null=True, blank=True, default='FRONT', help_text='보드 위 보이는 면')
 
 
 
