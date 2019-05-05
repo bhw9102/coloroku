@@ -4,6 +4,9 @@ from django.db import models
 class Player(models.Model):
     name = models.CharField(max_length=32, help_text='이름')
 
+    def __str__(self):
+        return self.name
+
 
 SESSION_STATE = (
     ('READY', '준비'),
@@ -16,11 +19,21 @@ class Session(models.Model):
     name = models.CharField(max_length=16, null=False, blank=False, default='임의의 세션', help_text="세션명")
     state = models.CharField(max_length=8, null=False, blank=True, choices=SESSION_STATE, default='READY', help_text='상태')
 
+    def __str__(self):
+        return "{}-{}".format(self.name, self.state)
+
+
+JOINED_STATE = (
+    ('JOINED', '참여한'),
+    ('EXITED', '퇴장한'),
+)
+
 
 class PlayerSession(models.Model):
     player = models.ForeignKey('Player', on_delete=models.CASCADE, help_text='플레이어')
     session = models.ForeignKey('Session', on_delete=models.CASCADE, help_text='세션')
     score = models.PositiveSmallIntegerField(default=0, help_text='점수')
+    state = models.CharField(max_length=8, null=False, blank=True, choices=JOINED_STATE, default='JOINED', help_text='참여 상태')
 
 
 CARD_LOCATION = (

@@ -6,6 +6,7 @@
 
 {% block body %}
   <body>
+    {% include './_signedin.html' %}
     <div>생성하고자 하는 방 이름을 입력하고 생성 버튼을 눌러주세요.</div>
     <form method="POST" id="session-form">
       {% csrf_token %}

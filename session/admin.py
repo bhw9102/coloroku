@@ -14,7 +14,7 @@ class SessionAdmin(ImportExportModelAdmin):
 
 
 class PlayerSessionAdmin(ImportExportModelAdmin):
-    list_display = ('id', 'player', 'session', 'score', )
+    list_display = ('id', 'player', 'session', 'score', 'state', )
     list_display_links = ('id', 'score', )
 
 

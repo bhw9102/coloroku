@@ -27,8 +27,10 @@ def login(request):
 
 def lobby(request):
     player = Player.objects.filter(name=request.session['player_name']).first()
-    # GET
-    # TODO: 접속해있던 모든 방에서 나가지게 해야한다.
+    player_session_list = PlayerSession.objects.filter(player=player).all()
+    for player_session in player_session_list:
+        player_session.state = 'EXITED'
+        player_session.save()
     session_list = Session.objects.filter(state="READY").all()
     return render(request, 'session/lobby.html', {'session_list': session_list})
 
@@ -47,8 +49,14 @@ def create_room(request):
 
 
 def room(request, session_id):
-
-    return render(request, 'session/room.html')
+    # GET
+    session = Session.objects.filter(pk=session_id).first()
+    player = Player.objects.filter(name=request.session['player_name']).first()
+    player_session = PlayerSession.objects.filter(player=player, session=session, state='JOINED').first()
+    if player_session is None:
+        PlayerSession.objects.create(player=player, session=session)
+    player_session_list = PlayerSession.objects.filter(session=session, state='JOINED').all()
+    return render(request, 'session/room.html', {'player_session_list': player_session_list})
 
 
 def play(request):
