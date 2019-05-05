@@ -3,6 +3,8 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from session.form import PlayerForm, SessionForm
 from session.models import *
+from game.models import CardClass
+from session.common import shuffle_ordering
 
 
 def intro(request):
@@ -56,15 +58,52 @@ def room(request, session_id):
     if player_session is None:
         PlayerSession.objects.create(player=player, session=session)
     player_session_list = PlayerSession.objects.filter(session=session, state='JOINED').all()
-    request.session['session_name'] = session.name
-    return render(request, 'session/room.html', {'player_session_list': player_session_list})
+    data = dict(player_session_list=player_session_list, session=session)
+    return render(request, 'session/room.html', data)
 
 
-def play(request):
+def play(request, session_id):
+    session = Session.objects.filter(pk=session_id).first()
+    # 세션이 시작 전이라면, 세션 초기화를 한다.
+    if session.state == 'READY':
+        # 세션 상태를 게임 중으로 변경한다.
+        session.state = 'PLAY'
+        session.turn = 0
+        session.save()
+        # 참가자의 게임 순서를 지정한다.
+        player_session_list = PlayerSession.objects.filter(session=session, state='JOINED').all()
+        for i, player_session in enumerate(player_session_list):
+            player_session.order = i
+            player_session.save()
+        # 게임에 사용될 카드 뭉치를 생성한다.
+        card_class_list = CardClass.objects.all()
+        for card_class in card_class_list:
+            for i in range(5):
+                Card.objects.create(session=session, card=card_class)
+        # 카드 뭉치를 섞는다.
+        card_list = Card.objects.filter(session=session).all()
+        ordered = shuffle_ordering(card_list.count())
+        for i, card in enumerate(card_list):
+            card.order = ordered[i]
+            card.save()
+        # 첫 핸드를 참가자에게 나눠준다.
+        card_list = Card.objects.filter(session=session).order_by('order').all()
+        player_cnt = player_session_list.count()
+        for player_session in player_session_list:
+            p_order = player_session.order
+            hand_order_list = [p_order, p_order+player_cnt, p_order+player_cnt*2]
+            for hand_order in hand_order_list:
+                order_card = card_list.get(order=hand_order)
+                order_card.player_session = player_session
+                order_card.location = 'HAND'
+                order_card.save()
+    # 게임 진행 정보를 취합한다.
+    # if session.state == 'PLAY':
+    #     hand_list =
     return render(request, 'session/play.html')
 
 
-def result(request):
+def result(request, session_id):
     return render(request, 'session/result.html')
 
 

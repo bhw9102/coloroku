@@ -9,7 +9,7 @@ urlpatterns = [
     path('lobby/', views.lobby, name='lobby'),
     path('create-room/', views.create_room, name='create_room'),
     path('room/<int:session_id>/', views.room, name='room'),
-    path('play/', views.play, name='play'),
-    path('result/', views.play, name='result'),
+    path('play/<int:session_id>/', views.play, name='play'),
+    path('result/<int:session_id>/', views.result, name='result'),
 ]
 
