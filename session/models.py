@@ -23,6 +23,10 @@ class Session(models.Model):
     def __str__(self):
         return "{}-{}".format(self.name, self.state)
 
+    @property
+    def player_cnt(self):
+        return PlayerSession.objects.filter(session=self, state='JOINED').all().count()
+
 
 JOINED_STATE = (
     ('JOINED', '참여한'),
@@ -39,6 +43,13 @@ class PlayerSession(models.Model):
 
     def __str__(self):
         return '{}-{}'.format(self.player, self.session)
+
+    @property
+    def is_turn(self):
+        turn = self.session.turn
+        player_cnt = self.session.player_cnt
+        current_order = turn % player_cnt
+        return self.order is current_order
 
 
 CARD_LOCATION = (

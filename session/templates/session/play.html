@@ -10,8 +10,22 @@
     <div>방 이름 : {{ session.name }}</div>
 
   </body>
+  <div>{{ session }}</div>
+  <div>{{ deck_cnt }}</div>
+  <div>{{ hand_list }}</div>
+  <div>{{ board_list }}</div>
+  <div>{{ player_session_list }}</div>
+  {% for player_session in player_session_list %}
+    <div>{{ player_session.is_turn }}</div>
+  {% endfor %}
 {% endblock %}
 
 {% block javascript %}
-  <script src="{% static 'js/play.js' %}"></script>
+  <script>
+    function isTurn(playerSession){
+        var turn = {{ session.turn }};
+        console.log(turn);
+    }
+    isTurn();
+  </script>
 {% endblock %}

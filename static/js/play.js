@@ -1,7 +1,7 @@
 function isTurn(){
     console.log("Hello World!!!");
-    var session = document.querySelector("session");
-    console.log(session);
+    var test = "{{ session.name }}";
+    console.log(test);
 }
 
 isTurn();
