@@ -1,0 +1,36 @@
+- model: game.cardclass
+  pk: 1
+  fields:
+    color_front: '#FF0000'
+    color_back: '#800080'
+    count: 5
+- model: game.cardclass
+  pk: 2
+  fields:
+    color_front: '#0000FF'
+    color_back: '#800080'
+    count: 5
+- model: game.cardclass
+  pk: 3
+  fields:
+    color_front: '#0000FF'
+    color_back: '#008000'
+    count: 5
+- model: game.cardclass
+  pk: 4
+  fields:
+    color_front: '#FFFF00'
+    color_back: '#008000'
+    count: 5
+- model: game.cardclass
+  pk: 5
+  fields:
+    color_front: '#FFFF00'
+    color_back: '#FF8C00'
+    count: 5
+- model: game.cardclass
+  pk: 6
+  fields:
+    color_front: '#FF0000'
+    color_back: '#FF8C00'
+    count: 5
