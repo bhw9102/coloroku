@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.db.models import Max
 
 class Player(models.Model):
     name = models.CharField(max_length=32, help_text='이름')
@@ -70,10 +70,50 @@ class Card(models.Model):
     location = models.CharField(max_length=8, choices=CARD_LOCATION, default='DECK', help_text='카드의 위치')
     order = models.PositiveSmallIntegerField(null=True, blank=True, help_text='카드 뭉치 속에서 순서, 0부터 가장 위')
     player_session = models.ForeignKey('PlayerSession', null=True, blank=True, on_delete=models.CASCADE, help_text='소유한 플레이어')
-    pos_x = models.PositiveSmallIntegerField(null=True, blank=True, help_text='보드 위 x 좌표')
-    pos_y = models.PositiveSmallIntegerField(null=True, blank=True, help_text='보드 위 y 좌표')
-    pos_z = models.PositiveSmallIntegerField(null=True, blank=True, help_text='보드 위 z 좌표, 보이는 카드의 값이 0이 되도록 한다.')
+    board = models.ForeignKey('Board', null=True, blank=True, on_delete=models.CASCADE)
+    pos_z = models.PositiveSmallIntegerField(null=True, blank=True, help_text='보드 위 z 좌표')
     face = models.CharField(max_length=8, choices=CARD_FACE, null=True, blank=True, default='FRONT', help_text='보드 위 보이는 면')
+
+    @property
+    def face_card(self):
+        if self.face == 'FRONT':
+            return self.card.color_front
+        # elif self.face == 'BACK'
+        return self.card.color_back
+
+
+class Board(models.Model):
+    session = models.ForeignKey('Session', on_delete=models.CASCADE, help_text='세션')
+    x = models.PositiveSmallIntegerField(help_text='보드 위 x 좌표')
+    y = models.PositiveSmallIntegerField(help_text='보드 위 y 좌표')
+
+    def __str__(self):
+        return '{}-({},{})'.format(self.session, self.x, self.y)
+
+    @property
+    def top_card(self):
+        card_list = Card.objects.filter(location='BOARD', board=self).all()
+        print(card_list)
+        card = Card.objects.filter(location='BOARD', board=self).first()
+        for tmp in card_list:
+            if card.pos_z < tmp.pos_z:
+                card = tmp
+        return card
+        # return self.card_set.all().aggregate(models.Max('pos_z'))
+
+    @classmethod
+    def two_dimension_board_list(cls, session):
+        # TODO: 하드코딩 되어있다.
+        board_size = 3
+        board_list = list()
+        for y in range(0, board_size):
+            column_list = list()
+            for x in range(0, board_size):
+                board = Board.objects.filter(session=session, x=x, y=y).first()
+                column_list.append(board)
+            board_list.append(column_list)
+        return board_list
+
 
 
 

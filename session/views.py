@@ -69,6 +69,12 @@ def play(request, session_id):
         session.state = 'PLAY'
         session.turn = 0
         session.save()
+        # 보드판 데이터를 생성한다.
+        # TODO: 하드코딩 되어있다.
+        board_size = 3
+        for x in range(0, board_size):
+            for y in range(0, board_size):
+                Board.objects.create(session=session, x=x, y=y)
         # 참가자의 게임 순서를 지정한다.
         player_session_list = PlayerSession.objects.filter(session=session, state='JOINED').all()
         for i, player_session in enumerate(player_session_list):
@@ -103,7 +109,7 @@ def play(request, session_id):
                                                       state='JOINED').first()
         deck_cnt = Card.objects.filter(session=session, location='DECK').all().count()
         hand_list = Card.objects.filter(session=session, location='HAND', player_session=player_session).all()
-        board_list = Card.objects.filter(session=session, location='BOARD', pos_z=0).all()
+        board_list = Board.two_dimension_board_list(session=session)
         data = dict(session=session, player_session_list=player_session_list, deck_cnt=deck_cnt,
                     hand_list=hand_list, board_list=board_list)
         return render(request, 'session/play.html', data)

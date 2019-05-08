@@ -8,16 +8,34 @@
   <body>
     {% include './_signedin.html' %}
     <div>방 이름 : {{ session.name }}</div>
-
+    <div>참가자 목록</div>
+    {% for player_session in player_session_list %}
+      <div>
+        {{ player_session.player.name }} | 차례 : {{ player_session.is_turn }}
+      </div>
+    {% endfor %}
+    <div>보드</div>
+    <div class="wrapper">
+      {% for row_list in board_list %}
+        {% for board in row_list %}
+          <div class="box" >
+            <div>{{ board.top_card.face_card }}</div>
+            <div>x : {{ board.x }}</div>
+            <div>y : {{ board.y }}</div>
+          </div>
+        {% endfor %}
+      {% endfor %}
+    </div>
+    <div>핸드</div>
+    <div class="wrapper">
+      {% for card in hand_list %}
+        <div class="box">
+          <div>{{ card.card.color_front }}</div>
+          <div>{{ card.card.color_back }}</div>
+        </div>
+      {% endfor %}
+    </div>
   </body>
-  <div>{{ session }}</div>
-  <div>{{ deck_cnt }}</div>
-  <div>{{ hand_list }}</div>
-  <div>{{ board_list }}</div>
-  <div>{{ player_session_list }}</div>
-  {% for player_session in player_session_list %}
-    <div>{{ player_session.is_turn }}</div>
-  {% endfor %}
 {% endblock %}
 
 {% block javascript %}
