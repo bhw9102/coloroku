@@ -93,7 +93,6 @@ class Board(models.Model):
     @property
     def top_card(self):
         card_list = Card.objects.filter(location='BOARD', board=self).all()
-        print(card_list)
         card = Card.objects.filter(location='BOARD', board=self).first()
         for tmp in card_list:
             if card.pos_z < tmp.pos_z:

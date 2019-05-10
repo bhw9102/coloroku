@@ -14,24 +14,22 @@
         {{ player_session.player.name }} | 차례 : {{ player_session.is_turn }}
       </div>
     {% endfor %}
-    <div>보드</div>
+    <h3>보드</h3>
     <div class="wrapper">
       {% for row_list in board_list %}
         {% for board in row_list %}
-          <div class="box" >
+          <div class="box" style="background-color: {{ board.top_card.face_card }};" onclick="playBoard({{ board.id }})">
             <div>{{ board.top_card.face_card }}</div>
-            <div>x : {{ board.x }}</div>
-            <div>y : {{ board.y }}</div>
           </div>
         {% endfor %}
       {% endfor %}
     </div>
-    <div>핸드</div>
+    <h3>핸드</h3>
     <div class="wrapper">
       {% for card in hand_list %}
         <div class="box">
-          <div>{{ card.card.color_front }}</div>
-          <div>{{ card.card.color_back }}</div>
+          <div class="box" style="background-color: {{ card.card.color_front }};" onclick="playHand({{ card.id }}, 'FRONT')"></div>
+          <div class="box" style="background-color: {{ card.card.color_back }};" onclick="playHand({{ card.id }}, 'BACK')"></div>
         </div>
       {% endfor %}
     </div>
@@ -40,10 +38,51 @@
 
 {% block javascript %}
   <script>
+    let playerState = "IDLE";
+    /*
+    IDLE : 아무런 행동도 하지 않음
+    CHOOSE_HAND : 핸드에 있는 카드를 선택한 상태
+    PLAY_HAND : 핸드를 보드에 내려놓음
+    CHOOSE_BOARD : 보드에 있는 카드를 선택한 상태
+    PLAY_BOARD : 보드에 있는 카드를 원하는 위치에 내려놓음
+     */
+
+    let chooseCard = "";
+    let chooseFace = "";
     function isTurn(playerSession){
-        var turn = {{ session.turn }};
-        console.log(turn);
+        console.log({{ session.turn }});
     }
     isTurn();
+
+    function playHand(id, face){
+        console.log("hand card id : "+id);
+        if(playerState === "IDLE"){
+            playerState = "CHOOSE_HAND";
+            chooseCard = id;
+            chooseFace = face;
+
+        }else if(playerState === "CHOOSE_HAND"){
+            if(chooseCard === id){
+                if(chooseFace === face){
+                    playerState = "IDLE";
+                    chooseCard = "";
+                    chooseFace = "";
+                }
+            }else{
+              chooseCard = id;
+              chooseFace = face;
+            }
+
+        }else if(playerState === "CHOOSE_BOARD"){
+
+        }
+        console.log("player state : " + playerState);
+        console.log("choose card : " + chooseCard);
+        console.log("choose face : " + chooseFace);
+    }
+
+    function playBoard(id){
+        console.log("board ard id : "+id)
+    }
   </script>
 {% endblock %}
