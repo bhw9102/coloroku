@@ -18,7 +18,7 @@
     <div class="wrapper">
       {% for row_list in board_list %}
         {% for board in row_list %}
-          <div class="box" style="background-color: {{ board.top_card.face_card }};" onclick="playBoard({{ board.id }})">
+          <div class="box" style="background-color: {{ board.top_card.face_card }};" onclick="playBoard({{ board.id }}, {{ board.x }}, {{ board.y }})">
             <div>{{ board.top_card.face_card }}</div>
           </div>
         {% endfor %}
@@ -27,7 +27,7 @@
     <h3>핸드</h3>
     <div class="wrapper">
       {% for card in hand_list %}
-        <div class="box">
+        <div>
           <div class="box" style="background-color: {{ card.card.color_front }};" onclick="playHand({{ card.id }}, 'FRONT')"></div>
           <div class="box" style="background-color: {{ card.card.color_back }};" onclick="playHand({{ card.id }}, 'BACK')"></div>
         </div>
@@ -49,24 +49,28 @@
 
     let chooseCard = "";
     let chooseFace = "";
+    let chooseX = "";
+    let chooseY = "";
     function isTurn(playerSession){
         console.log({{ session.turn }});
     }
     isTurn();
 
     function playHand(id, face){
+        post('hand/');
         console.log("hand card id : "+id);
         if(playerState === "IDLE"){
             playerState = "CHOOSE_HAND";
             chooseCard = id;
             chooseFace = face;
-
         }else if(playerState === "CHOOSE_HAND"){
             if(chooseCard === id){
                 if(chooseFace === face){
                     playerState = "IDLE";
                     chooseCard = "";
                     chooseFace = "";
+                }else{
+                    chooseFace = face;
                 }
             }else{
               chooseCard = id;
@@ -74,15 +78,88 @@
             }
 
         }else if(playerState === "CHOOSE_BOARD"){
-
+            playerState = "CHOOSE_HAND";
+            chooseCard = id;
+            chooseFace = face;
         }
         console.log("player state : " + playerState);
         console.log("choose card : " + chooseCard);
         console.log("choose face : " + chooseFace);
     }
 
-    function playBoard(id){
-        console.log("board ard id : "+id)
+    function playBoard(id, x, y){
+        console.log("board ard id : "+id);
+        if(playerState === "IDLE"){
+            playerState = "CHOOSE_BOARD";
+            chooseCard = id;
+            chooseX = x;
+            chooseY = y;
+        }else if(playerState === "CHOOSE_BOARD"){
+            if(chooseCard === id){
+                playerState = "IDLE";
+                chooseCard = "";
+                chooseFace = "";
+                chooseX = "";
+                chooseY = "";
+            }else{
+                if(isReversible(x, y)){
+                    // 카드 플레이
+
+                }
+            }
+        }else if(playerState === "CHOOSE_HAND"){
+            // 카드 플레이
+        }
+        console.log("player state : " + playerState);
+        console.log("choose card : " + chooseCard);
+    }
+
+    function isReversible(x, y){
+        if((chooseX === x) && (chooseY-1 === y)){
+            // 위
+            return true;
+        }else if((chooseX === x) && (chooseY+1 === y)){
+            // 아래
+            return true;
+        }else if((chooseX-1 === x) && (chooseY === y)){
+            // 왼
+            return true;
+        }else if((chooseX+1 === x) && (chooseY === y)){
+            // 오른
+            return true;
+        }
+        return false;
+    }
+
+    function postPlayHand(handId, face, boardId){
+
+    }
+
+    function postPlayBoard(){
+
+    }
+
+    function post(path, params, method='post') {
+
+      // The rest of this code assumes you are not using a library.
+      // It can be made less wordy if you use one.
+      const form = document.createElement('form');
+      form.method = method;
+      form.action = path;
+
+      for (const key in params) {
+        if (params.hasOwnProperty(key)) {
+          const hiddenField = document.createElement('input');
+          hiddenField.type = 'hidden';
+          hiddenField.name = key;
+          hiddenField.value = params[key];
+
+          form.appendChild(hiddenField);
+        }
+      }
+
+      document.body.appendChild(form);
+      form.submit();
     }
   </script>
 {% endblock %}

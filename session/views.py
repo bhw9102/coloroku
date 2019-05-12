@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
 from session.form import PlayerForm, SessionForm
 from session.models import *
 from game.models import CardClass
@@ -114,6 +115,20 @@ def play(request, session_id):
                     hand_list=hand_list, board_list=board_list)
         return render(request, 'session/play.html', data)
     return render(request, 'session/play.html')
+
+
+@csrf_exempt
+def play_hand(request, session_id):
+    if request.method == 'POST':
+        return HttpResponseRedirect(reverse('play', kwargs={'session_id': session_id}))
+    return HttpResponseRedirect(reverse('lobby'))
+
+
+@csrf_exempt
+def play_board(request, session_id):
+    if request.method == 'POST':
+        return HttpResponseRedirect(reverse('play', kwargs={'session_id': session_id}))
+    return HttpResponseRedirect(reverse('lobby'))
 
 
 def result(request, session_id):
