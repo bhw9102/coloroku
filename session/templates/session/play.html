@@ -45,8 +45,9 @@
     PLAY_HAND : 핸드를 보드에 내려놓음
     CHOOSE_BOARD : 보드에 있는 카드를 선택한 상태
     PLAY_BOARD : 보드에 있는 카드를 원하는 위치에 내려놓음
-     */
+    */
 
+    let playerName = "{{ request.session.player_name }}";
     let chooseCard = "";
     let chooseFace = "";
     let chooseBoard = "";
@@ -91,6 +92,10 @@
         console.log("board ard id : "+id);
         if(playerState === "IDLE"){
             if(isTop === -1) {
+                playerState = "IDLE";
+                chooseBoard = "";
+                chooseX = "";
+                chooseY = "";
                 return;
             }
             playerState = "CHOOSE_BOARD";
@@ -111,7 +116,7 @@
             }
         }else if(playerState === "CHOOSE_HAND"){
             // 카드 플레이
-            post('hand/', {'card':chooseCard, 'face': chooseFace, 'board': id})
+            post('hand/', {'card':chooseCard, 'face': chooseFace, 'board': id, 'player_name': playerName})
         }
         console.log("player state : " + playerState);
         console.log("choose board : " + chooseBoard);

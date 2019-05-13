@@ -131,6 +131,14 @@ def play_hand(request, session_id):
         if board.top_card:
             card.pos_z = board.top_card.pos_z + 1
         card.save()
+
+        # 플레이어는 새로운 카드를 드로우한다.
+        player_session = PlayerSession.objects\
+            .filter(player__name=request.POST['player_name'], session=session_id).first()
+        draw_card = Card.deck_top(session=session_id)
+        draw_card.location = 'HAND'
+        draw_card.player_session = player_session
+        draw_card.save()
         return HttpResponseRedirect(reverse('play', kwargs={'session_id': session_id}))
     return HttpResponseRedirect(reverse('lobby'))
 

@@ -81,6 +81,11 @@ class Card(models.Model):
         # elif self.face == 'BACK'
         return self.card.color_back
 
+    @classmethod
+    def deck_top(cls, session):
+        deck_top = Card.objects.filter(session=session, location='DECK').order_by('order').first()
+        return deck_top
+
 
 class Board(models.Model):
     session = models.ForeignKey('Session', on_delete=models.CASCADE, help_text='세션')
