@@ -18,7 +18,7 @@
     <div class="wrapper">
       {% for row_list in board_list %}
         {% for board in row_list %}
-          <div class="box" style="background-color: {{ board.top_card.face_card }};" onclick="playBoard({{ board.id }}, {{ board.x }}, {{ board.y }})">
+          <div class="box" style="background-color: {{ board.top_card.face_card }};" onclick="playBoard({{ board.id }}, {{ board.top_card.id|default:'-1'}}, {{ board.x }}, {{ board.y }})">
             <div>{{ board.top_card.face_card }}</div>
           </div>
         {% endfor %}
@@ -87,9 +87,12 @@
         console.log("choose face : " + chooseFace);
     }
 
-    function playBoard(id, x, y){
+    function playBoard(id, isTop, x, y){
         console.log("board ard id : "+id);
         if(playerState === "IDLE"){
+            if(isTop === -1) {
+                return;
+            }
             playerState = "CHOOSE_BOARD";
             chooseBoard = id;
             chooseX = x;
@@ -111,7 +114,7 @@
             post('hand/', {'card':chooseCard, 'face': chooseFace, 'board': id})
         }
         console.log("player state : " + playerState);
-        console.log("choose card : " + chooseCard);
+        console.log("choose board : " + chooseBoard);
     }
 
     function isReversible(x, y){
