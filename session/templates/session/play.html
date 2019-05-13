@@ -28,8 +28,8 @@
     <div class="wrapper">
       {% for card in hand_list %}
         <div>
-          <div class="box" style="background-color: {{ card.card.color_front }};" onclick="playHand({{ card.id }}, 'FRONT')"></div>
-          <div class="box" style="background-color: {{ card.card.color_back }};" onclick="playHand({{ card.id }}, 'BACK')"></div>
+          <div class="box" style="height: 100px; background-color: {{ card.card.color_front }};" onclick="playHand({{ card.id }}, 'FRONT')"></div>
+          <div class="box" style="height: 100px; background-color: {{ card.card.color_back }};" onclick="playHand({{ card.id }}, 'BACK')"></div>
         </div>
       {% endfor %}
     </div>
@@ -49,6 +49,7 @@
 
     let chooseCard = "";
     let chooseFace = "";
+    let chooseBoard = "";
     let chooseX = "";
     let chooseY = "";
     function isTurn(playerSession){
@@ -57,7 +58,6 @@
     isTurn();
 
     function playHand(id, face){
-        post('hand/');
         console.log("hand card id : "+id);
         if(playerState === "IDLE"){
             playerState = "CHOOSE_HAND";
@@ -91,24 +91,24 @@
         console.log("board ard id : "+id);
         if(playerState === "IDLE"){
             playerState = "CHOOSE_BOARD";
-            chooseCard = id;
+            chooseBoard = id;
             chooseX = x;
             chooseY = y;
         }else if(playerState === "CHOOSE_BOARD"){
-            if(chooseCard === id){
+            if(chooseBoard === id){
                 playerState = "IDLE";
-                chooseCard = "";
-                chooseFace = "";
+                chooseBoard = "";
                 chooseX = "";
                 chooseY = "";
             }else{
                 if(isReversible(x, y)){
                     // 카드 플레이
-
+                    post('board/', {'board_prev':chooseBoard, 'board_next':id})
                 }
             }
         }else if(playerState === "CHOOSE_HAND"){
             // 카드 플레이
+            post('hand/', {'card':chooseCard, 'face': chooseFace, 'board': id})
         }
         console.log("player state : " + playerState);
         console.log("choose card : " + chooseCard);
@@ -129,14 +129,6 @@
             return true;
         }
         return false;
-    }
-
-    function postPlayHand(handId, face, boardId){
-
-    }
-
-    function postPlayBoard(){
-
     }
 
     function post(path, params, method='post') {
