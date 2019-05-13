@@ -121,8 +121,6 @@ def play(request, session_id):
 def play_hand(request, session_id):
     if request.method == 'POST':
         # 핸드에 있던 카드를 보드에 놓다.
-        print(request)
-        print(request.POST['card'])
         card = Card.objects.filter(pk=request.POST['card']).first()
         face = request.POST['face']
         board = Board.objects.filter(pk=request.POST['board']).first()
@@ -140,7 +138,19 @@ def play_hand(request, session_id):
 @csrf_exempt
 def play_board(request, session_id):
     if request.method == 'POST':
-        print(request)
+        # 보드에 있던 카드를 뒤집어 다른 보드에 놓다.
+        board_prev = Board.objects.filter(pk=request.POST['board_prev']).first()
+        board_next = Board.objects.filter(pk=request.POST['board_next']).first()
+        card = board_prev.top_card
+        card.board = board_next
+        if card.face == 'FRONT':
+            card.face = 'BACK'
+        else:
+            card.face = 'FRONT'
+        card.pos_z = 0
+        if board_next.top_card:
+            card.pos_z = board_next.top_card.pos_z + 1
+        card.save()
         return HttpResponseRedirect(reverse('play', kwargs={'session_id': session_id}))
     return HttpResponseRedirect(reverse('lobby'))
 
