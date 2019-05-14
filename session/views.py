@@ -111,8 +111,8 @@ def play(request, session_id):
         deck_cnt = Card.objects.filter(session=session, location='DECK').all().count()
         hand_list = Card.objects.filter(session=session, location='HAND', player_session=player_session).all()
         board_list = Board.two_dimension_board_list(session=session)
-        data = dict(session=session, player_session_list=player_session_list, deck_cnt=deck_cnt,
-                    hand_list=hand_list, board_list=board_list)
+        data = dict(session=session, player_session_list=player_session_list, player_session=player_session,
+                    deck_cnt=deck_cnt, hand_list=hand_list, board_list=board_list)
         return render(request, 'session/play.html', data)
     return render(request, 'session/play.html')
 

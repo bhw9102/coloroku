@@ -60,6 +60,9 @@
 
     function playHand(id, face){
         console.log("hand card id : "+id);
+        if("{{ player_session.is_turn }}" === "False"){
+            return ;
+        }
         if(playerState === "IDLE"){
             playerState = "CHOOSE_HAND";
             chooseCard = id;
@@ -90,6 +93,9 @@
 
     function playBoard(id, isTop, x, y){
         console.log("board ard id : "+id);
+        if("{{ player_session.is_turn }}" === "False"){
+            return ;
+        }
         if(playerState === "IDLE"){
             if(isTop === -1) {
                 playerState = "IDLE";
