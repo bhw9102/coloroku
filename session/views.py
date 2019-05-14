@@ -114,6 +114,8 @@ def play(request, session_id):
         data = dict(session=session, player_session_list=player_session_list, player_session=player_session,
                     deck_cnt=deck_cnt, hand_list=hand_list, board_list=board_list)
         return render(request, 'session/play.html', data)
+    if session.state == 'END':
+        return HttpResponseRedirect(reverse('result', kwargs={'session_id': session_id}))
     return render(request, 'session/play.html')
 
 
@@ -163,6 +165,12 @@ def play_hand(request, session_id):
         # 순서를 넘기다.
         session = Session.objects.filter(pk=session_id).first()
         session.turn = session.turn + 1
+
+        # 모든 카드가 보드에 놓이면 게임이 종료된다.
+        hand_card_list = Card.objects.filter(session=session, location='HAND').all()
+        deck_card_list = Card.objects.filter(session=session, location='DECK').all()
+        if (hand_card_list.count() == 0) and (deck_card_list.count() == 0):
+            session.state = 'END'
         session.save()
         return HttpResponseRedirect(reverse('play', kwargs={'session_id': session_id}))
     return HttpResponseRedirect(reverse('lobby'))
@@ -214,6 +222,8 @@ def play_board(request, session_id):
 
 
 def result(request, session_id):
-    return render(request, 'session/result.html')
+    player_session_list = PlayerSession.objects.filter(session=session_id).all()
+    data = dict(player_session_list=player_session_list)
+    return render(request, 'session/result.html', data)
 
 

@@ -5,6 +5,13 @@
 {% endblock %}
 
 {% block body %}
+  <body>
+    {% for player_session in player_session_list %}
+      <div>{{ player_session.player.name }} | {{ player_session.score }}</div>
+    {% endfor %}
+
+    <a href="{% url 'lobby' %}">로비</a>
+  </body>
 {% endblock %}
 
 {% block javascript %}
