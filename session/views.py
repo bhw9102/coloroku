@@ -189,19 +189,19 @@ def play_board(request, session_id):
         board_top = Board.objects.filter(session=session_id, x=board_next.x, y=board_next.y-1).first()
         if board_top and board_top.top_card:
             if board_top.top_card.face_card == board_next.top_card.face_card:
-                player_session.score = player_session.score + 20
+                player_session.score = player_session.score + 30
         board_bottom = Board.objects.filter(session=session_id, x=board_next.x, y=board_next.y+1).first()
         if board_bottom and board_bottom.top_card:
             if board_bottom.top_card.face_card == board_next.top_card.face_card:
-                player_session.score = player_session.score + 20
+                player_session.score = player_session.score + 30
         board_left = Board.objects.filter(session=session_id, x=board_next.x-1, y=board_next.y).first()
         if board_left and board_left.top_card:
             if board_left.top_card.face_card == board_next.top_card.face_card:
-                player_session.score = player_session.score + 20
+                player_session.score = player_session.score + 30
         board_right = Board.objects.filter(session=session_id, x=board_next.x+1, y=board_next.y).first()
         if board_right and board_right.top_card:
             if board_right.top_card.face_card == board_next.top_card.face_card:
-                player_session.score = player_session.score + 20
+                player_session.score = player_session.score + 30
         player_session.save()
 
         # 순서를 넘기다.
