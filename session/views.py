@@ -136,9 +136,10 @@ def play_hand(request, session_id):
         player_session = PlayerSession.objects\
             .filter(player__name=request.POST['player_name'], session=session_id).first()
         draw_card = Card.deck_top(session=session_id)
-        draw_card.location = 'HAND'
-        draw_card.player_session = player_session
-        draw_card.save()
+        if draw_card:
+            draw_card.location = 'HAND'
+            draw_card.player_session = player_session
+            draw_card.save()
 
         # 점수를 계산한다. 핸드에서 카드를 플레이하면, 10점을 준다.
         board_top = Board.objects.filter(session=session_id, x=board.x, y=board.y - 1).first()
