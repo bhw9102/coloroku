@@ -11,7 +11,7 @@
     <div>참가자 목록</div>
     {% for player_session in player_session_list %}
       <div>
-        {{ player_session.player.name }} | 차례 : {{ player_session.is_turn }}
+        {{ player_session.player.name }} | 점수 : {{ player_session.score }} | 차례 : {{ player_session.is_turn }}
       </div>
     {% endfor %}
     <h3>보드</h3>
@@ -20,6 +20,7 @@
         {% for board in row_list %}
           <div class="box" style="background-color: {{ board.top_card.face_card }};" onclick="playBoard({{ board.id }}, {{ board.top_card.id|default:'-1'}}, {{ board.x }}, {{ board.y }})">
             <div>{{ board.top_card.face_card }}</div>
+            <div>{{ board.x }} : {{ board.y }}</div>
           </div>
         {% endfor %}
       {% endfor %}
@@ -117,7 +118,7 @@
             }else{
                 if(isReversible(x, y)){
                     // 카드 플레이
-                    post('board/', {'board_prev':chooseBoard, 'board_next':id})
+                    post('board/', {'board_prev':chooseBoard, 'board_next':id, 'player_name': playerName})
                 }
             }
         }else if(playerState === "CHOOSE_HAND"){

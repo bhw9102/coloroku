@@ -139,6 +139,30 @@ def play_hand(request, session_id):
         draw_card.location = 'HAND'
         draw_card.player_session = player_session
         draw_card.save()
+
+        # 점수를 계산한다. 핸드에서 카드를 플레이하면, 10점을 준다.
+        board_top = Board.objects.filter(session=session_id, x=board.x, y=board.y - 1).first()
+        if board_top and board_top.top_card:
+            if board_top.top_card.face_card == board.top_card.face_card:
+                player_session.score = player_session.score + 10
+        board_bottom = Board.objects.filter(session=session_id, x=board.x, y=board.y + 1).first()
+        if board_bottom and board_bottom.top_card:
+            if board_bottom.top_card.face_card == board.top_card.face_card:
+                player_session.score = player_session.score + 10
+        board_left = Board.objects.filter(session=session_id, x=board.x - 1, y=board.y).first()
+        if board_left and board_left.top_card:
+            if board_left.top_card.face_card == board.top_card.face_card:
+                player_session.score = player_session.score + 10
+        board_right = Board.objects.filter(session=session_id, x=board.x + 1, y=board.y).first()
+        if board_right and board_right.top_card:
+            if board_right.top_card.face_card == board.top_card.face_card:
+                player_session.score = player_session.score + 10
+        player_session.save()
+
+        # 순서를 넘기다.
+        session = Session.objects.filter(pk=session_id).first()
+        session.turn = session.turn + 1
+        session.save()
         return HttpResponseRedirect(reverse('play', kwargs={'session_id': session_id}))
     return HttpResponseRedirect(reverse('lobby'))
 
@@ -159,6 +183,31 @@ def play_board(request, session_id):
         if board_next.top_card:
             card.pos_z = board_next.top_card.pos_z + 1
         card.save()
+
+        # 점수를 계산하다. 보드에서 카드를 움직이는 플레이는 20점을 준다.
+        player_session = PlayerSession.objects.filter(session=session_id, player__name=request.POST['player_name']).first()
+        board_top = Board.objects.filter(session=session_id, x=board_next.x, y=board_next.y-1).first()
+        if board_top and board_top.top_card:
+            if board_top.top_card.face_card == board_next.top_card.face_card:
+                player_session.score = player_session.score + 20
+        board_bottom = Board.objects.filter(session=session_id, x=board_next.x, y=board_next.y+1).first()
+        if board_bottom and board_bottom.top_card:
+            if board_bottom.top_card.face_card == board_next.top_card.face_card:
+                player_session.score = player_session.score + 20
+        board_left = Board.objects.filter(session=session_id, x=board_next.x-1, y=board_next.y).first()
+        if board_left and board_left.top_card:
+            if board_left.top_card.face_card == board_next.top_card.face_card:
+                player_session.score = player_session.score + 20
+        board_right = Board.objects.filter(session=session_id, x=board_next.x+1, y=board_next.y).first()
+        if board_right and board_right.top_card:
+            if board_right.top_card.face_card == board_next.top_card.face_card:
+                player_session.score = player_session.score + 20
+        player_session.save()
+
+        # 순서를 넘기다.
+        session = Session.objects.filter(pk=session_id).first()
+        session.turn = session.turn + 1
+        session.save()
         return HttpResponseRedirect(reverse('play', kwargs={'session_id': session_id}))
     return HttpResponseRedirect(reverse('lobby'))
 
