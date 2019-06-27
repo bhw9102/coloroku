@@ -21,11 +21,11 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('', RedirectView.as_view(url='session/', permanent=False), name='redirect_session'),
+    # path('', RedirectView.as_view(url='session/', permanent=False), name='redirect_session'),
+    path('', include('session.urls')),
     path('admin/', admin.site.urls),
     path('session/', include('session.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-
